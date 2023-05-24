@@ -27,19 +27,6 @@ module.exports = class {
 
       if (found.issues.length) return found
     }
-
-    if (this.argv.from) {
-      const template = eventTemplates[this.argv.from]
-
-      if (template) {
-        const searchStr = this.preprocessString(template)
-        const found = await this.findIssueKeyIn(searchStr)
-
-        if (found.issues.length) return found
-      }
-    }
-
-
   }
 
   /**
