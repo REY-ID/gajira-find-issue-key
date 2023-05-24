@@ -19,12 +19,12 @@ async function exec () {
     }).execute()
 
     if (result) {
-      console.log(`Detected issueKey: ${result.issue}`)
-      console.log(`Saving ${result.issue} to ${cliConfigPath}`)
-      console.log(`Saving ${result.issue} to ${configPath}`)
+      console.log(`Detected issueKey: ${result.issues}`)
+      console.log(`Saving ${result.issues} to ${cliConfigPath}`)
+      console.log(`Saving ${result.issues} to ${configPath}`)
 
-      // Expose created issue's key as an output
-      core.setOutput('issue', result.issue)
+      core.setOutput('issues', result.issues)
+      core.setOutput('issue_links', result.issue_links)
 
       const yamledResult = YAML.stringify(result)
       const extendedConfig = Object.assign({}, config, result)
