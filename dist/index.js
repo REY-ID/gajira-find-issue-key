@@ -73,10 +73,11 @@ module.exports = class {
       }
     }
 
-    const issue_links = issues.map(issue => `${this.config.baseUrl}/browse/${issue}`);
+    const unique = [...new Set(issues)]
+    const issue_links = unique.map(issue => `${this.config.baseUrl}/browse/${issue}`);
 
     return {
-      issues,
+      issues: unique,
       issue_links
     }
   }
