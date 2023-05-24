@@ -24,7 +24,7 @@ async function exec () {
       console.log(`Saving ${result.issues} to ${cliConfigPath}`)
       console.log(`Saving ${result.issues} to ${configPath}`)
 
-      core.setOutput('issues', result.issues)
+      core.setOutput('issues', result.issues.join(', '))
       core.setOutput('issue_links', result.issue_links)
 
       const yamledResult = YAML.stringify(result)

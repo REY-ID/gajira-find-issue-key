@@ -32537,6 +32537,7 @@ async function exec () {
 
     if (result) {
       console.log(`Detected issueKey: ${result.issues}`)
+      console.log(`Detected issueLinks: ${result.issue_links}`)
       console.log(`Saving ${result.issues} to ${cliConfigPath}`)
       console.log(`Saving ${result.issues} to ${configPath}`)
 
