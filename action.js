@@ -56,7 +56,10 @@ module.exports = class {
     if (!match) {
       console.log(`String does not contain issueKeys`)
 
-      return
+      return {
+        issues: [],
+        issue_links: []
+      }
     }
 
     for (const issueKey of match) {
