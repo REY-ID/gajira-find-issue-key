@@ -29,9 +29,9 @@ module.exports = class {
 
   async execute () {
     if (this.argv.string) {
-      const foundIssue = await this.findIssueKeyIn(this.argv.string)
+      const found = await this.findIssueKeyIn(this.argv.string)
 
-      if (foundIssue) return foundIssue
+      if (found.issues.length) return found
     }
 
     if (this.argv.from) {
@@ -39,14 +39,22 @@ module.exports = class {
 
       if (template) {
         const searchStr = this.preprocessString(template)
-        const foundIssue = await this.findIssueKeyIn(searchStr)
+        const found = await this.findIssueKeyIn(searchStr)
 
-        if (foundIssue) return foundIssue
+        if (found.issues.length) return found
       }
     }
+
+
   }
 
+  /**
+   * @param {string} searchStr 
+   * @returns {Promise<string[]>}
+   */
   async findIssueKeyIn (searchStr) {
+    const issues = [];
+
     const match = searchStr.match(issueIdRegEx)
 
     console.log(`Searching in string: \n ${searchStr}`)
@@ -61,8 +69,15 @@ module.exports = class {
       const issue = await this.Jira.getIssue(issueKey)
 
       if (issue) {
-        return { issue: issue.key }
+        issues.push(issue.key)
       }
+    }
+
+    const issue_links = issues.map(issue => `${this.config.baseUrl}/browse/${issue}`);
+
+    return {
+      issues,
+      issue_links
     }
   }
 
@@ -32521,12 +32536,12 @@ async function exec () {
     }).execute()
 
     if (result) {
-      console.log(`Detected issueKey: ${result.issue}`)
-      console.log(`Saving ${result.issue} to ${cliConfigPath}`)
-      console.log(`Saving ${result.issue} to ${configPath}`)
+      console.log(`Detected issueKey: ${result.issues}`)
+      console.log(`Saving ${result.issues} to ${cliConfigPath}`)
+      console.log(`Saving ${result.issues} to ${configPath}`)
 
-      // Expose created issue's key as an output
-      core.setOutput('issue', result.issue)
+      core.setOutput('issues', result.issues)
+      core.setOutput('issue_links', result.issue_links)
 
       const yamledResult = YAML.stringify(result)
       const extendedConfig = Object.assign({}, config, result)
