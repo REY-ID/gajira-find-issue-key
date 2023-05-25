@@ -30,7 +30,6 @@ module.exports = class {
   async execute () {
     if (this.argv.string) {
       const found = await this.findIssueKeyIn(this.argv.string)
-
       if (found.issues.length) return found
     }
   }
@@ -40,7 +39,7 @@ module.exports = class {
    * @returns {Promise<string[]>}
    */
   async findIssueKeyIn (searchStr) {
-    const issues = [];
+    const issues = {};
 
     const match = searchStr.match(issueIdRegEx)
 
@@ -51,26 +50,30 @@ module.exports = class {
 
       return {
         issues: [],
-        issue_links: []
+        has_issues: true,
+        markdown: ""
       }
     }
 
     for (const issueKey of match) {
       const issue = await this.Jira.getIssue(issueKey)
 
-      console.log(`Found issue: ${JSON.stringify(issue)}`)
-
       if (issue) {
-        issues.push(issue.key)
+        issues[issue.key] = issue
       }
     }
 
-    const unique = [...new Set(issues)]
-    const issue_links = unique.map(issue => `${this.config.baseUrl}/browse/${issue}`);
+    const tasks = Object.values(issues).map(data => {
+      const title = data.fields.summary.length > maxTitleChar ? data.fields.summary.substring(0, maxTitleChar) + "..." : data.fields.summary;
+      return `:sparkles: *<${baseURL}/browse/${data.key}|${data.key}>* ${title}\\n${data.fields.assignee.displayName} - ${data.fields.status.name}`
+    });
+
+    const markdown = tasks.join('\\n\\n\\n')
 
     return {
-      issues: unique,
-      issue_links
+      issues: Object.keys(issues),
+      markdown,
+      has_issues: true
     }
   }
 
@@ -32530,12 +32533,12 @@ async function exec () {
 
     if (result) {
       console.log(`Detected issueKey: ${result.issues}`)
-      console.log(`Detected issueLinks: ${result.issue_links}`)
       console.log(`Saving ${result.issues} to ${cliConfigPath}`)
       console.log(`Saving ${result.issues} to ${configPath}`)
 
-      core.setOutput('issues', result.issues.join(', '))
-      core.setOutput('issue_links', result.issue_links)
+      core.setOutput('issues', result.issues)
+      core.setOutput('markdown', result.markdown)
+      core.setOutput('has_issues', result.has_issues)
 
       const yamledResult = YAML.stringify(result)
       const extendedConfig = Object.assign({}, config, result)
