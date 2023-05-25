@@ -8,6 +8,8 @@ const eventTemplates = {
   commits: "{{event.commits.map(c=>c.message).join(' ')}}",
 }
 
+const maxTitleChar = 35
+
 module.exports = class {
   constructor ({ githubEvent, argv, config }) {
     this.Jira = new Jira({
