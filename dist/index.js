@@ -57,7 +57,9 @@ module.exports = class {
       }
     }
 
-    for (const issueKey of match) {
+    const uniqueMatch = [...new Set(match)];
+
+    for (const issueKey of uniqueMatch) {
       const issue = await this.Jira.getIssue(issueKey)
 
       if (issue) {
@@ -70,7 +72,7 @@ module.exports = class {
       return `:sparkles: *<${this.config.baseUrl}/browse/${data.key}|${data.key}>* ${title}\\n${data.fields.assignee.displayName} - ${data.fields.status.name}`
     });
 
-    const markdown = tasks.join('\\n\\n\\n')
+    const markdown = tasks.join('\\n\\n')
 
     return {
       issues: Object.keys(issues),
