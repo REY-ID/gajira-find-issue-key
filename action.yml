@@ -14,8 +14,10 @@ inputs:
 outputs:
   issues:
     description: Key of the found issue
-  issue_links:
-    description: Links to the found issue
+  markdown:
+    description: Generated markdown
+  has_issues:
+    description: Whether there are any issues found
 runs:
   using: 'node16'
   main: './dist/index.js'
