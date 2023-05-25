@@ -65,7 +65,7 @@ module.exports = class {
 
     const tasks = Object.values(issues).map(data => {
       const title = data.fields.summary.length > maxTitleChar ? data.fields.summary.substring(0, maxTitleChar) + "..." : data.fields.summary;
-      return `:sparkles: *<${baseURL}/browse/${data.key}|${data.key}>* ${title}\\n${data.fields.assignee.displayName} - ${data.fields.status.name}`
+      return `:sparkles: *<${this.config.baseUrl}/browse/${data.key}|${data.key}>* ${title}\\n${data.fields.assignee.displayName} - ${data.fields.status.name}`
     });
 
     const markdown = tasks.join('\\n\\n\\n')
