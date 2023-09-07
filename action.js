@@ -63,7 +63,16 @@ module.exports = class {
 
     const tasks = Object.values(issues).map(data => {
       const title = data.fields.summary.length > maxTitleChar ? data.fields.summary.substring(0, maxTitleChar) + "..." : data.fields.summary;
-      return `:sparkles: *<${this.config.baseUrl}/browse/${data.key}|${data.key}>* ${title}\\n${data.fields.assignee.displayName} - ${data.fields.status.name}`
+
+      let icon = ':small_blue_diamond:';
+
+      if (data.fields.issuetype.name === 'Bug') {
+        icon = ':small_red_triangle_down:'
+      } else if (data.fields.issuetype.name === 'Story') {
+        icon = ':large_green_circle:';
+      }
+
+      return `${icon} *<${this.config.baseUrl}/browse/${data.key}|${data.key}>* ${title}\\n${data.fields.assignee.displayName} - ${data.fields.status.name}`
     });
 
     const markdown = tasks.join('\\n\\n')
