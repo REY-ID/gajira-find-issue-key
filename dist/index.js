@@ -78,7 +78,9 @@ module.exports = class {
         icon = ':large_green_circle:';
       }
 
+      // remove double quotes from text to avoid markdown issues
       return `${icon} *<${this.config.baseUrl}/browse/${data.key}|${data.key}>* ${title}\\n${data.fields.assignee.displayName} - ${data.fields.status.name}`
+        .replace(/"/g, '');
     });
 
     const markdown = tasks.join('\\n\\n')
